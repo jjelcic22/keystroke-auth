@@ -1,0 +1,13 @@
+[
+  "ht_mean",
+  "ht_std",
+  "dd_mean",
+  "dd_std",
+  "ud_mean",
+  "ud_std",
+  "typing_speed",
+  "backspace_count",
+  "backspace_ratio",
+  "total_duration",
+  "key_count"
+]
