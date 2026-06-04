@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <title>Prikupljanje dinamike tipkanja</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 850px;
+      margin: 40px auto;
+      line-height: 1.5;
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      font-size: 18px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    select, button {
+      margin: 8px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .info {
+      margin-top: 15px;
+      background: #f2f2f2;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Prikupljanje uzoraka tipkanja</h1>
+
+  <p>
+    Odaberi osobu koja trenutno tipka. Jure i Mateo su dopušteni korisnici,
+    a svi ostali su uljezi.
+  </p>
+
+  <label>Osoba koja tipka:</label><br>
+  <select id="userId">
+    <option value="jure">Jure</option>
+    <option value="mateo">Mateo</option>
+    <option value="sandro">Sandro</option>
+    <option value="maksim">Maksim</option>
+    <option value="roberto">Roberto</option>
+    <option value="drugi">Drugi korisnik</option>
+  </select>
+
+  <p>Tipkaj normalno 1-3 rečenice. Nemoj copy-pasteati tekst.</p>
+
+  <textarea id="typingArea" placeholder="Tipkaj ovdje..."></textarea><br>
+
+  <button onclick="saveSample()">Spremi uzorak</button>
+  <button onclick="downloadData()">Preuzmi raw_samples.json</button>
+  <button onclick="resetCurrentSample()">Resetiraj trenutni uzorak</button>
+
+  <div class="info">
+    <p>Broj spremljenih uzoraka: <span id="sampleCount">0</span></p>
+    <p>Broj tipki u trenutnom uzorku: <span id="eventCount">0</span></p>
+    <p>Backspace count: <span id="backspaceCount">0</span></p>
+  </div>
+
+  <script>
+    let allSamples = [];
+    let events = [];
+    let pressedKeys = {};
+    let backspaceCount = 0;
+
+    const allowedUsers = ["jure", "mateo"];
+
+    const ignoredKeys = [
+      "Shift", "Control", "Alt", "Meta", "CapsLock",
+      "Tab", "Escape", "ArrowLeft", "ArrowRight",
+      "ArrowUp", "ArrowDown"
+    ];
+
+    const typingArea = document.getElementById("typingArea");
+
+    typingArea.addEventListener("keydown", function (e) {
+      if (ignoredKeys.includes(e.key)) return;
+      if (e.repeat) return;
+
+      if (e.key === "Backspace") {
+        backspaceCount++;
+        document.getElementById("backspaceCount").textContent = backspaceCount;
+      }
+
+      pressedKeys[e.key] = performance.now();
+    });
+
+    typingArea.addEventListener("keyup", function (e) {
+      if (ignoredKeys.includes(e.key)) return;
+
+      const keydownTime = pressedKeys[e.key];
+      if (keydownTime === undefined) return;
+
+      events.push({
+        key: e.key,
+        keydown: keydownTime,
+        keyup: performance.now()
+      });
+
+      delete pressedKeys[e.key];
+
+      document.getElementById("eventCount").textContent = events.length;
+    });
+
+    function saveSample() {
+      const userId = document.getElementById("userId").value;
+
+      if (events.length < 40) {
+        alert("Uzorak je prekratak. Utipkaj barem 40 tipki.");
+        return;
+      }
+
+      const label = allowedUsers.includes(userId) ? 1 : 0;
+
+      const sample = {
+        sample_id: allSamples.length + 1,
+        user_id: userId,
+        label: label,
+        events: events,
+        backspace_count: backspaceCount,
+        created_at: new Date().toISOString()
+      };
+
+      allSamples.push(sample);
+
+      resetCurrentSample();
+
+      document.getElementById("sampleCount").textContent = allSamples.length;
+
+      alert("Uzorak spremljen za korisnika: " + userId);
+    }
+
+    function resetCurrentSample() {
+      events = [];
+      pressedKeys = {};
+      backspaceCount = 0;
+      typingArea.value = "";
+
+      document.getElementById("eventCount").textContent = 0;
+      document.getElementById("backspaceCount").textContent = 0;
+    }
+
+    function downloadData() {
+      if (allSamples.length === 0) {
+        alert("Nema spremljenih uzoraka.");
+        return;
+      }
+
+      const dataStr = JSON.stringify(allSamples, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "raw_samples.json";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
