@@ -32,7 +32,6 @@ keystroke-auth/
 ├── requirements.txt            # Python ovisnosti
 │
 ├── data/                       # Mapa s podacima
-│   ├── raw_samples.json        # Spojeni sirovi uzorci tipkanja
 │   ├── features.csv            # Izračunate značajke
 │   └── raw_inputs.zip          # Arhiva originalnih prikupljenih datoteka
 │
