@@ -102,16 +102,7 @@ tipkanja i ne treba mu backend
 - Otvara se u pregledniku, odabere se osoba koja tipka, te se na kraju spremaju svi uzorci u *.json* formatu 
 
 
-## Ponovno treniranje modela
 
-Ako se prikupe novi uzorci, model se može iznova istrenirati:
-1. Generiranje skupa značajki iz sirovih uzoraka:
-```bash
-python3 ml/prepare_dataset.py --input data/raw_samples.json
-```
-- Ova naredba stvara `data/raw_samples.json` i `data/features.csv`
-
-2. Otvaranje `ml/model_pipeline.ipynb` i pokretanje svih ćelija. Notebook trenira modele, evaluira ih i sprema nove `.pkl` datoteke u mapu `models/`
 
 ## Korištene tehnologije
 
