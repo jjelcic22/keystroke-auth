@@ -34,16 +34,12 @@ DEFAULT_THRESHOLD = 0.60
 
 
 def normalize_user_id(user_id: str) -> str:
-    """Vraca user_id u standardnom obliku."""
     return str(user_id).lower().strip()
 
 
 @lru_cache(maxsize=1)
 def load_feature_columns() -> List[str]:
-    """
-    Ucitava redoslijed feature stupaca iz models/feature_columns.json.
-    Ako datoteka ne postoji, koristi DEFAULT_FEATURE_COLUMNS.
-    """
+
     path = MODELS_DIR / "feature_columns.json"
 
     if not path.exists():
