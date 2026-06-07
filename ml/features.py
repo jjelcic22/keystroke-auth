@@ -43,7 +43,6 @@ def _safe_std(values: Iterable[float]) -> float:
 
 
 def _clean_paired_event(event: Dict[str, Any]) -> Dict[str, Any] | None:
-    """Validira event formata {"key", "keydown", "keyup"}."""
     try:
         key = str(event["key"])
         keydown = float(event["keydown"])
