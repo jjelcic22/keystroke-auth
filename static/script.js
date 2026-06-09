@@ -1,13 +1,3 @@
-/**
- * script.js — frontend logika za live autentifikaciju tipkanjem
- *
- * Prilagođeno stvarnom modelu:
- * - šalje prozore od 40 dovršenih keydown/keyup parova
- * - ignorira Shift/Ctrl/Alt i slične tipke
- * - ne šalje e.repeat evente
- * - backend prima paired events:
- *   { key: "a", keydown: 1000.0, keyup: 1080.0 }
- */
 
 "use strict";
 
